@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Past Productions - SPART</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Three.js (for 3D scene) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <!-- Your Custom Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .poster-card {
+            transition: transform 0.3s ease-in-out;
+        }
+        .poster-card:hover {
+            transform: scale(1.05);
+        }
+        .masonry-grid {
+            column-count: 1;
+            column-gap: 3rem;
+        }
+
+        @media (min-width: 640px) {
+            .masonry-grid {
+                column-count: 2;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .masonry-grid {
+                column-count: 3;
+            }
+        }
+
+        .masonry-grid .poster-card {
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 3rem;
+            break-inside: avoid;
+        }
+        #loading-screen {
+            transition: opacity 0.5s ease-in-out;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <!-- Global 3D Star Scene -->
+    <div id="global-star-scene"></div>
+
+    <!-- Header -->
+    <header id="main-header" class="header top-0 z-50 w-full border-b border-gray-900/50">
+        <nav class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-20 items-center justify-between">
+
+                <!-- Logo -->
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-3 nav-link" data-target="home">
+                    <img class="h-10 w-auto" src="images/logo.png" alt="SPART Logo"
+                        onerror="this.src='https://placehold.co/100x40/000000/FFFFFF?text=SPART'; this.classList.remove('inverted-logo');">
+                    <span class="font-serif text-2xl font-bold text-white hidden sm:block">SPART</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex md:items-center md:space-x-8 lg:space-x-10">
+                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.html#featured-video">Featured</a>
+                    <a class="nav-link" href="index.html#about">About</a>
+                    <a class="nav-link" href="team.html">Team</a>
+                    <a class="nav-link" href="past_productions.html">Events</a>
+                    <a class="nav-link" href="index.html#gallery">Gallery</a>
+                    <a class="nav-link" href="index.html#contact">Contact</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform"  target="_blank" class="nav-link btn-nav-join">Apply</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button id="menu-btn" type="button"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-300 hover:text-white focus:outline-none"
+                        aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Open Icon -->
+                        <svg id="icon-open" class="block h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <!-- Close Icon -->
+                        <svg id="icon-close" class="hidden h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-900 bg-black/80 backdrop-blur-md">
+            <div class="space-y-4 px-2 pt-4 pb-6 sm:px-3 text-center">
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html">Home</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#featured-video">Featured</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#about">About</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="team.html">Team</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="past_productions.html">Events</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#gallery">Gallery</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#contact">Contact</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform" target="_blank" class="nav-link btn-nav-join block w-3/4 mx-auto mt-4">Apply</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Past Productions Page Content -->
+        <section id="full-legacy" class="py-24 sm:py-32" data-theme="dark">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center reveal reveal-1"> <!-- Start visible -->
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-400 tracking-wider">Our Legacy</h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-white sm:text-6xl">Past Productions</p>
+                    <p class="mt-6 text-xl leading-8 text-gray-300">
+                        A gallery of our most memorable shows. Each poster represents months of dedication, creativity, and passion from our members.
+                    </p>
+                </div>
+                
+                <!-- Poster Grid -->
+                <div class="mt-20 masonry-grid">
+                    
+                    <!-- Poster 1 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-2 cursor-pointer" data-description="A poignant coming of age romance that follows Zion, a reserved university student and music enthusiast, whose life takes an unexpected turn one stormy night, At a deserted bus stop, they meet Sienna, a mysterious and captivating young woman who seems to embody the rain itself - ephemeral and unforgettable. What begins as a chance encounter, evolves into a transformative bond, as midnight rainstorms become their sanctuary for love and self-discovery. But Sienna harbours a haunting secret, she exists only in the echoes of a past, Zion can’t yet understand.">
+                        <div class="overflow-hidden">
+                            <img src="images/mr2.png" alt="Midnight Rain" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    
+                    <!-- Poster 2 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-3 cursor-pointer" data-description="SPART presents: Scott Pilgrim vs. The Stage 🎭 From epic bass battles to wild stage combat, Scott’s fight for love takes on a whole new level. He’ll rock the stage. He’ll face the chaos. Will he win the girl of his dreams? 💥💘">
+                        <div class="overflow-hidden">
+                            <img src="images/spvts.JPG" alt="Scott Pilgrim vs The Stage" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 3 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-4 cursor-pointer" data-description="Set during mid to late 1960s America, amidst tragedies and revolutions that shook a nation to its core, fading actress and heiress Thalia Adler receives the news that her lung cancer has become terminal. With a clear end in her sights, she wonders what to make of the rest of her life. But what cracks laid beneath the pristine facade of the Adlers? What would be the legacy of Ms Thalia Adler? And was Thalia Adler herself as perfect as she was on the silver screen?">
+                        <div class="overflow-hidden">
+                            <img src="images/towfull.png" alt="The Other woman" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 4 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-1 cursor-pointer" data-description="Get ready to be amazed ✨ SPARTacular Week brings you four plays, each crafted by four brilliant directors! Each play has its own unique spark 🤩🤩">
+                        <div class="overflow-hidden">
+                            <img src="images/spartacular.JPG" alt="Spartacular Week" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 5 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-2 cursor-pointer" data-description="t’s the day of the wedding between the lovely couple Da-jeong and Myeong-hoon, when an unexpected guest shows up, clad in black. Bok-su, an old university friend of Da-jeong’s, has come to visit her old friend, although she’s not exactly there to offer her congratulations. Her goal? To make Choi Da-jeong atone. -Based on the game 'Married in Red'">
+                        <div class="overflow-hidden">
+                            <img src="images/tddup1.png" alt="Till Death Do Us Part" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 6 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-3 cursor-pointer" data-description="“You just need to meet the right person to start feeling” Audrey’s Mother. A mother who’s taught her daughter everything she needs to know. Every lesson that would eventually lead her to find love.What could Elizabeth taught Audrey? Stay tuned for “LOVESTRUCK.”">
+                        <div class="overflow-hidden">
+                            <img src="images/lovestruck.PNG" alt="Lovestruck" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 7 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-4 cursor-pointer" data-description="a fun-filled bonding night as we bring the iconic “Mean Girls” to the big screen! 🩷">
+                        <div class="overflow-hidden">
+                            <img src="images/tuesday.jpg" alt="SPARTuesday 2025" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 8 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-1 cursor-pointer" data-description="Behind every great drink order is an even greater character! From the barkeep to regulars, the cast of “While the Coffee Brews” is ready to serve you! 🫵🙂‍↕️">
+                        <div class="overflow-hidden">
+                            <img src="images/wtcb.jpg" alt="While The Coffee Brews" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+
+                    <!-- Poster 9 -->
+                    <div class="group poster-card block rounded-lg overflow-hidden reveal reveal-4 cursor-pointer" data-description="Sarah, a reserved young woman, finds an unexpected connection with Eric, a friendly barista at a local cafe.They click very well as if they have known each other for a long time. As their friendship deepens, Sarah experiences vivid deja vu moments and fleeting memories involving Eric, even though she does not recall meeting him before. She finds out that her fragmented recollections are tied to a devastating trauma: a tragic event that shattered her past with Eric. Torn between guilt, loss and an overflowing desire to mend what has broken, Sarah decided to confront her hidden pain and rediscover the love once defined her life.">
+                        <div class="overflow-hidden">
+                            <img src="images/HWMB POS 2.png" alt="Have We Met Before?" class="w-full h-full object-cover">
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Dark Theme) -->
+    <footer class="bg-black border-t border-gray-900" data-theme="dark">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <!-- Logo & Copyright -->
+                <div class="flex flex-col md:items-start items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <img class="h-8 w-auto" src="images/logo.png" alt="SPART Logo"
+                             onerror="this.src='https://placehold.co/100x32/000000/FFFFFF?text=SPART'; this.classList.remove('inverted-logo');">
+                        <span class="text-lg font-semibold text-white font-serif">Taylor's Society of Performing Arts</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        &copy; 2025 SPART. All Rights Reserved.
+                    </p>
+                </div>
+                <!-- Social Icons -->
+                <div class="flex space-x-6">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/sparttulc/?hl=en" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <!-- TikTok -->
+                    <a href="https://www.tiktok.com/@spart.tlc" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="TikTok">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a4 4 0 0 0-4-4H9.5a4.5 4.5 0 0 0-4.02 6.13a4.5 4.5 0 0 0 4.02 2.87H13v5a4 4 0 0 0 4 4h1a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4Z">
+                            </path>
+                        </svg>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="https://www.youtube.com/@sparttulc" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="YouTube">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M2.5 17a24.12 24.12 0 0 1 0-10C2.5 6 4.5 4 7 4h10c2.5 0 4.5 2 4.5 3v10c0 .5-.5 1.5-1.5 2S19.5 20 17 20H7c-2.5 0-4.5-.5-4.5-2Z">
+                            </path>
+                            <path d="m10 15 5-3-5-3z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="poster-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50 hidden opacity-0">
+        <div class="modal-content bg-gray-900 rounded-lg shadow-xl w-full max-w-4xl max-h-full overflow-y-auto p-8 relative transform scale-95 opacity-0">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors">
+                <svg class="h-8 w-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                <img id="modal-img" src="" alt="Production Poster" class="w-full h-auto rounded-lg object-contain">
+                <div>
+                    <h2 id="modal-title" class="font-serif text-3xl font-bold text-white mb-4"></h2>
+                    <p id="modal-description" class="text-gray-300 text-lg"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Your Custom JavaScript -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('poster-modal');
+            const modalImg = document.getElementById('modal-img');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const closeModalBtn = document.getElementById('close-modal');
+            const posters = document.querySelectorAll('.poster-card');
+
+            posters.forEach(poster => {
+                poster.addEventListener('click', () => {
+                    const imgSrc = poster.querySelector('img').src;
+                    const title = poster.querySelector('img').alt;
+                    const description = poster.dataset.description;
+
+                    modalImg.src = imgSrc;
+                    modalTitle.textContent = title;
+                    modalDescription.textContent = description;
+
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modal.classList.remove('opacity-0');
+                        modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');
+                    }, 10);
+                });
+            });
+
+            const closeModal = () => {
+                modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
+                modal.classList.add('opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

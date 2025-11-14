@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taylor's Society of Performing Arts (SPART)</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Three.js (for 3D scene) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #loading-screen {
+            transition: opacity 0.5s ease-in-out;
+        }
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        .animate-spin-slow {
+            animation: spin 3s linear infinite;
+        }
+        #full-team {
+            background-image: url('images/background1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed; /* Optional: for parallax effect */
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <!-- Global 3D Star Scene -->
+    <div id="global-star-scene"></div>
+
+    <!-- Header -->
+    <header id="main-header" class="header top-0 z-50 w-full border-b border-gray-900/50">
+        <nav class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-20 items-center justify-between">
+
+                <!-- Logo -->
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-3 nav-link" data-target="home">
+                    <img class="h-10 w-auto" src="images/logo.png" alt="SPART Logo"
+                        onerror="this.src='https://placehold.co/100x40/000000/FFFFFF?text=SPART'; this.classList.remove('inverted-logo');">
+                    <span class="font-serif text-2xl font-bold text-white hidden sm:block">SPART</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex md:items-center md:space-x-8 lg:space-x-10">
+                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.html#featured-video">Featured</a>
+                    <a class="nav-link" href="index.html#about">About</a>
+                    <a class="nav-link" href="team.html">Team</a>
+                    <a class="nav-link" href="past_productions.html">Events</a>
+                    <a class="nav-link" href="index.html#gallery">Gallery</a>
+                    <a class="nav-link" href="index.html#contact">Contact</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform"  target="_blank" class="nav-link btn-nav-join">Apply</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button id="menu-btn" type="button"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-300 hover:text-white focus:outline-none"
+                        aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Open Icon -->
+                        <svg id="icon-open" class="block h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <!-- Close Icon -->
+                        <svg id="icon-close" class="hidden h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-900 bg-black/80 backdrop-blur-md">
+            <div class="space-y-4 px-2 pt-4 pb-6 sm:px-3 text-center">
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html">Home</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#featured-video">Featured</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#about">About</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="team.html">Team</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="past_productions.html">Events</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#gallery">Gallery</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    href="index.html#contact">Contact</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform" target="_blank" class="nav-link btn-nav-join block w-3/4 mx-auto mt-4">Apply</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Team Page Content -->
+        <section id="full-team" class="py-24 sm:py-32" data-theme="light">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center reveal reveal-1"> <!-- Start visible -->
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-600 tracking-wider">The Cast</h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-black sm:text-6xl">EXCO/BOD 2025</p>
+                    <p class="mt-6 text-xl leading-8 text-gray-700">
+                        The full cast and crew behind SPART. Get to know the dedicated individuals who make every performance possible.
+                    </p>
+                </div>
+                
+                <!-- Yearbook Grid -->
+                <div class="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Member 1 -->
+                    <div class="yearbook-card reveal reveal-2">
+                        <img class="yearbook-photo" src="images/danial.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Farros Danial</h3>
+                        <p class="yearbook-role">President</p>
+                        <p class="yearbook-quote">I totally love spart</p>
+                    </div>
+                    
+                    <!-- Member 2 -->
+                    <div class="yearbook-card reveal reveal-3">
+                        <img class="yearbook-photo" src="images/mark.jpeg" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Mark Aldrich</h3>
+                        <p class="yearbook-role">Vice President (Theatre)</p>
+                        <p class="yearbook-quote">Break a leg, everyone!</p>
+                    </div>
+
+                    <!-- Member 3 -->
+                    <div class="yearbook-card reveal reveal-4">
+                        <img class="yearbook-photo" src="images/mandy.jpeg" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Mandy</h3>
+                        <p class="yearbook-role">Secretary</p>
+                        <p class="yearbook-quote">I survived</p>
+                    </div>
+
+                    <!-- Member 4 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/kesin.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Ke sin</h3>
+                        <p class="yearbook-role">Treasurer</p>
+                        <p class="yearbook-quote">Show me the money!</p>
+                    </div>
+
+                    <!-- Member 5 -->
+                    <div class="yearbook-card reveal reveal-2">
+                        <img class="yearbook-photo" src="images/megan.jpg" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Megan Yong</h3>
+                        <p class="yearbook-role">Vice Secretary</p>
+                        <p class="yearbook-quote">5, 6, 7, 8!</p>
+                    </div>
+                    
+                    <!-- Member 6 -->
+                    <div class="yearbook-card reveal reveal-3">
+                        <img class="yearbook-photo" src="images/ethan.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Ethan Yan</h3>
+                        <p class="yearbook-role">Public Relations Director</p>
+                        <p class="yearbook-quote">All good</p>
+                    </div>
+
+                    <!-- Member 7 -->
+                    <div class="yearbook-card reveal reveal-4">
+                        <img class="yearbook-photo" src="images/jacinta.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Jacinta Anthony</h3>
+                        <p class="yearbook-role">Events Director</p>
+                        <p class="yearbook-quote">butterfly tat and a psych major? red flag.</p>
+                    </div>
+
+                    <!-- Member 8 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/alicia.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Adryna Alicia</h3>
+                        <p class="yearbook-role">Event Coordinator</p>
+                        <p class="yearbook-quote">SPART sold my soul.</p>
+                    </div>
+
+                    <!-- Member 9 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/tasha.png" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Tasha</h3>
+                        <p class="yearbook-role">Event Coordinator</p>
+                        <p class="yearbook-quote">A stitch in time saves nine.</p>
+                    </div>
+
+                    <!-- Member 10 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/holly.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Holly </h3>
+                        <p class="yearbook-role">Photography and Videography Director</p>
+                        <p class="yearbook-quote">A stitch in time saves nine.</p>
+                    </div>
+
+                    <!-- Member 11 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/erynn.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Erynn Wong</h3>
+                        <p class="yearbook-role">Graphic Designer</p>
+                        <p class="yearbook-quote">A stitch in time saves nine.</p>
+                    </div>
+
+                    <!-- Member 12 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/yara.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Yara Matouk</h3>
+                        <p class="yearbook-role">Social Media Manager</p>
+                        <p class="yearbook-quote">The world won't come to me, so I must go to it</p>
+                    </div>
+
+                    <!-- Member 13 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/rimas.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Rimas Asiri</h3>
+                        <p class="yearbook-role">Content Creator</p>
+                        <p class="yearbook-quote">the concept of being in SPART</p>
+                    </div>
+
+                    <!-- Member 14 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/suikee.jpg" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Sui Kee</h3>
+                        <p class="yearbook-role">Graphic Designer</p>
+                        <p class="yearbook-quote">A stitch in time saves nine.</p>
+                    </div>
+
+                    <!-- Member 15 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/jordon.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Jordon</h3>
+                        <p class="yearbook-role">Graphic Designer</p>
+                        <p class="yearbook-quote">when the chile is tea but the finna is gag sis im dead as a chile</p>
+                    </div>
+
+                    <!-- Member 16 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/falisha.jpeg" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Falisha</h3>
+                        <p class="yearbook-role">Social Media Manager</p>
+                        <p class="yearbook-quote">A stitch in time saves nine.</p>
+                    </div>
+
+                    <!-- Member 17 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/muba.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Mubashir</h3>
+                        <p class="yearbook-role">Photography and Videography Officer</p>
+                        <p class="yearbook-quote">Live, Laugh, Love Lamp.</p>
+                    </div>
+
+                    <!-- Member 18 -->
+                    <div class="yearbook-card reveal reveal-1">
+                        <img class="yearbook-photo" src="images/khai.JPG" alt="Committee Member">
+                        <h3 class="yearbook-name font-serif">Khai Sern</h3>
+                        <p class="yearbook-role">Photography and Videography Officer</p>
+                        <p class="yearbook-quote">Bro this club is garbage</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Dark Theme) -->
+    <footer class="bg-black border-t border-gray-900" data-theme="dark">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <!-- Logo & Copyright -->
+                <div class="flex flex-col md:items-start items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <img class="h-8 w-auto" src="images/logo.png" alt="SPART Logo"
+                             onerror="this.src='https://placehold.co/100x32/000000/FFFFFF?text=SPART'; this.classList.remove('inverted-logo');">
+                        <span class="text-lg font-semibold text-white font-serif">Taylor's Society of Performing Arts</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        &copy; 2025 SPART. All Rights Reserved.
+                    </p>
+                </div>
+                <!-- Social Icons -->
+                <div class="flex space-x-6">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/sparttulc/?hl=en" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <!-- TikTok -->
+                    <a href="https://www.tiktok.com/@spart.tlc" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="TikTok">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a4 4 0 0 0-4-4H9.5a4.5 4.5 0 0 0-4.02 6.13a4.5 4.5 0 0 0 4.02 2.87H13v5a4 4 0 0 0 4 4h1a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4Z">
+                            </path>
+                        </svg>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="https://www.youtube.com/@sparttulc" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="YouTube">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M2.5 17a24.12 24.12 0 0 1 0-10C2.5 6 4.5 4 7 4h10c2.5 0 4.5 2 4.5 3v10c0 .5-.5 1.5-1.5 2S19.5 20 17 20H7c-2.5 0-4.5-.5-4.5-2Z">
+                            </path>
+                            <path d="m10 15 5-3-5-3z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Your Custom JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

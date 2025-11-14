@@ -1,0 +1,667 @@
+/* Base styles */
+body {
+    background-color: #000000;
+    /* Set body background to black */
+    color: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    opacity: 0;
+    /* Hidden by default for fade-in */
+    transition: opacity 1s ease-in-out;
+    /* Fix for sticky-header layout shift */
+    padding-top: 80px;
+    /* Match header height */
+}
+
+/* Set section backgrounds */
+section {
+    position: relative;
+    /* Needed for z-index stacking */
+    z-index: 2;
+    /* Sections are above the star canvas */
+}
+
+section[data-theme="dark"] {
+    background-color: transparent;
+    /* Dark sections are transparent to show stars */
+    color: #FFFFFF;
+}
+
+section[data-theme="light"] {
+    background-color: #FFF;
+    /* Light sections are solid white, hiding stars */
+    color: #000;
+}
+
+/* Global 3D Star Scene */
+#global-star-scene {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    z-index: 1;
+    /* Star canvas is behind all sections */
+    pointer-events: none;
+    /* Allows clicks to pass through */
+}
+
+body.is-loaded {
+    opacity: 1;
+}
+
+/* Serif font for headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.font-serif {
+    font-family: 'EB Garamond', serif;
+}
+#home {
+    position: relative;
+    min-height: calc(100vh - 80px);
+    /* Full height minus header */
+    background-color: transparent;
+    /* Hero is transparent to show stars */
+    z-index: 2;
+    /* Stacks correctly */
+    /* Re-enable mouse events for 3D interaction */
+    pointer-events: auto;
+}
+
+/* New Hero Spotlight */
+#hero-spotlight {
+    position: absolute;
+    top: 45%;
+    /* Center on title */
+    left: 50%;
+    width: 800px;
+    height: 800px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(0, 0, 0, 0) 60%);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    animation: pulse-spotlight 5s infinite ease-in-out;
+}
+
+@keyframes pulse-spotlight {
+    0% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    100% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(0.95);
+    }
+}
+
+.hero-content {
+    position: relative;
+    z-index: 4;
+    /* On top of everything */
+}
+
+.hero-content a {
+    pointer-events: auto;
+    /* Re-enable pointer events for buttons */
+}
+
+/* --- New Scroll More Button --- */
+#scroll-more {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    /* No mouse events */
+}
+
+#scroll-more:hover {
+    /* opacity: 1; */
+    /* Removed hover effect */
+}
+
+#scroll-more .arrow {
+    width: 16px;
+    height: 16px;
+    border-bottom: 2px solid #aaa;
+    border-right: 2px solid #aaa;
+    transform: rotate(45deg);
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0) rotate(45deg);
+    }
+
+    40% {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    60% {
+        transform: translateY(4px) rotate(45deg);
+    }
+}
+
+
+/* --- Page Load & Section Transitions --- */
+.page-transition-out {
+    opacity: 0 !important;
+    transition: opacity 0.4s ease-in-out;
+}
+
+.page-transition-in {
+    opacity: 1 !important;
+    transition: opacity 0.4s ease-in-out;
+    transition-delay: 0.4s;
+}
+
+/* Header load animation */
+#main-header {
+    transform: translateY(-100%);
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 50;
+    /* Ensure header is on top */
+    position: fixed;
+    /* Make header sticky */
+    height: 80px;
+    /* Set fixed height */
+}
+
+body.is-loaded #main-header {
+    transform: translateY(0);
+}
+
+/* Hero content load animation */
+.hero-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1), transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+body.is-loaded .hero-reveal-1 {
+    transition-delay: 0.3s;
+}
+
+body.is-loaded .hero-reveal-2 {
+    transition-delay: 0.4s;
+}
+
+body.is-loaded .hero-reveal-3 {
+    transition-delay: 0.5s;
+}
+
+body.is-loaded .hero-reveal {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Scroll Reveal Animations (Pop + Fade) --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(60px) scale(0.98);
+    transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+    will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Staggered delays for children */
+.reveal-1 {
+    transition-delay: 0.1s;
+}
+
+.reveal-2 {
+    transition-delay: 0.2s;
+}
+
+.reveal-3 {
+    transition-delay: 0.3s;
+}
+
+.reveal-4 {
+    transition-delay: 0.4s;
+}
+
+/* --- Button Styling --- */
+.btn-ghost {
+    position: relative;
+    display: inline-block;
+    padding: 12px 28px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: color 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: 1;
+}
+
+/* Special ghost button for light theme */
+[data-theme="light"] .btn-ghost {
+    color: #000;
+    border-color: #000;
+}
+
+.btn-ghost::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #FFFFFF;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+    z-index: -1;
+}
+
+/* Special ghost button hover for light theme */
+[data-theme="light"] .btn-ghost::before {
+    background-color: #000;
+}
+
+.btn-ghost:hover {
+    color: #000000;
+}
+
+[data-theme="light"] .btn-ghost:hover {
+    color: #FFFFFF;
+}
+
+.btn-ghost:hover::before {
+    transform: scaleX(1);
+    transform-origin: right;
+}
+
+.btn-solid {
+    position: relative;
+    display: inline-block;
+    padding: 12px 28px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #000000;
+    background-color: #FFFFFF;
+    border: 2px solid #FFFFFF;
+    border-radius: 4px;
+    overflow: hidden;
+    transition: color 0.4s cubic-bezier(0.19, 1, 0.22, 1), background-color 0.4s cubic-bezier(0.19, 1, 0.22, 1), transform 0.3s ease, box-shadow 0.3s ease;
+    z-index: 1;
+    /* New animation */
+    box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.3);
+    animation: pulse-button 2s infinite;
+}
+
+.btn-solid:hover {
+    color: #FFFFFF;
+    background-color: #000000;
+    transform: scale(1.05);
+    animation-play-state: paused;
+    /* Pause glow on hover */
+    box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
+}
+
+/* Keyframe for button pulse */
+@keyframes pulse-button {
+    0% {
+        box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    50% {
+        box-shadow: 0 0 18px 2px rgba(255, 255, 255, 0.7);
+    }
+
+    100% {
+        box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* --- Header Styling --- */
+.header {
+    transition: background-color 0.3s ease;
+}
+
+.header-scrolled {
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* Invert logo to work on black background */
+.inverted-logo {
+    filter: invert(1);
+    mix-blend-mode: lighten;
+    /* Use lighten or screen to make the black bg transparent */
+}
+
+/* --- Animated Nav Links --- */
+.nav-link {
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #FFFFFF;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.nav-link:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+/* --- New "Apply" Button in Nav --- */
+.btn-nav-join {
+    padding: 8px 20px;
+    border-radius: 4px;
+    color: #000;
+    background-color: #fff;
+    border: 2px solid #fff;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
+    animation: pulse-button-nav 2s infinite;
+}
+
+.btn-nav-join:hover {
+    background-color: transparent;
+    color: #fff;
+    box-shadow: 0 0 20px 2px rgba(255, 255, 255, 0.8);
+}
+
+.btn-nav-join::after {
+    display: none;
+    /* No underline for button */
+}
+
+@keyframes pulse-button-nav {
+    0% {
+        box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    100% {
+        box-shadow: 0 0 15px 0 rgba(255, 255, 255, 0.5);
+    }
+}
+
+
+/* --- Mobile Menu Animation --- */
+#mobile-menu {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(-20px);
+    opacity: 0;
+    max-height: calc(100vh - 80px);
+    /* Max height minus header */
+    overflow-y: auto;
+    /* Scroll if content overflows */
+}
+
+#mobile-menu.open {
+    transform: translateY(0);
+    opacity: 1;
+    display: block;
+}
+
+/* --- Sticky About Section --- */
+#about .sticky-content {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 120px;
+    /* 80px header + 40px padding */
+    align-self: flex-start;
+    /* Important for sticky */
+}
+
+/* --- New Marquee Section --- */
+.marquee {
+    position: relative;
+    width: 100vw;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.marquee-content {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+    will-change: transform;
+}
+
+@keyframes marquee {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+
+    /* Stop at 50% for seamless loop */
+}
+
+.poster {
+    width: 300px;
+    /* Set fixed width */
+    margin: 0 1rem;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    flex-shrink: 0;
+}
+
+.poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.poster:hover {
+    transform: scale(1.1);
+    /* Increased zoom effect */
+}
+
+.poster:hover .poster-image {
+    transform: scale(1.1);
+    /* Match gallery zoom */
+}
+
+
+/* --- Gallery Hover Effect --- */
+.gallery-item {
+    overflow: hidden;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    width: 100%;
+}
+
+.gallery-item img {
+    transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.masonry-grid {
+    column-count: 1;
+    column-gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .masonry-grid {
+        column-count: 2;
+    }
+}
+
+@media (min-width: 1024px) {
+    .masonry-grid {
+        column-count: 3;
+    }
+}
+
+
+/* --- Contact Form Styling --- */
+.form-input {
+    background-color: #111;
+    border: 1px solid #333;
+    color: #FFF;
+    padding: 12px 16px;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #FFF;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+    border: 2px solid #000;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+/* --- Social Icons --- */
+.social-icon {
+    color: #888;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.social-icon:hover {
+    color: #FFF;
+    transform: scale(1.1);
+}
+
+/* --- Yearbook Team Card Styles --- */
+.yearbook-card {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.yearbook-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.459);
+}
+
+.yearbook-card .yearbook-photo {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 6 / 7;
+    object-fit: cover;
+    margin: 0 auto 1rem;
+    border: 4px solid #f0f0f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px; /* Changed from 50% to 4px for a slightly rounded rectangle */
+}
+
+.yearbook-card .yearbook-name {
+    font-family: 'EB Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #000;
+}
+
+.yearbook-card .yearbook-role {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #555;
+    margin-top: 0.25rem;
+}
+
+.yearbook-card .yearbook-quote {
+    font-family: 'EB Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: #777;
+    margin-top: 1rem;
+    quotes: "“" "”";
+}
+
+.yearbook-card .yearbook-quote::before {
+    content: open-quote;
+}
+
+.yearbook-card .yearbook-quote::after {
+    content: close-quote;
+}
+#loading-screen {
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+}
+#loading-screen.hidden {
+    transform: translateY(-100%);
+}

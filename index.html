@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taylor's Society of Performing Arts (SPART)</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Three.js (for 3D scene) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .modal-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-content {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .bg-image {
+            background-image: url('images/background1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-white">
+
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-black z-[100] flex flex-col items-center justify-center">
+        <img src="images/logo.png" alt="SPART Logo" class="h-72 w-auto">
+        <div id="loading-bar-container" class="w-48 h-1 bg-gray-800 rounded-full mt-4 overflow-hidden">
+            <div id="loading-bar" class="h-full bg-white" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Global 3D Star Scene -->
+    <div id="global-star-scene"></div>
+
+    <!-- Header -->
+    <header id="main-header" class="header top-0 z-50 w-full border-b border-gray-900/50">
+        <nav class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-20 items-center justify-between">
+
+                <!-- Logo -->
+                <a href="#home" class="flex-shrink-0 flex items-center gap-3 nav-link" data-target="home">
+                    <img class="h-10 w-auto" src="images/logo.png" alt="SPART Logo"
+                        onerror="this.src='https://placehold.co/100x40/000000/FFFFFF?text=SPART'; this.classList.remove('inverted-logo');">
+                    <span class="font-serif text-2xl font-bold text-white hidden sm:block">SPART</span>
+                </a>
+
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex md:items-center md:space-x-8 lg:space-x-10">
+                    <a class="nav-link" data-target="home">Home</a>
+                    <a class="nav-link" data-target="featured-video">Featured</a>
+                    <a class="nav-link" data-target="about">About</a>
+                    <a class="nav-link" href="team.html">Team</a>
+                    <a class="nav-link" href="past_productions.html">Events</a>
+                    <a class="nav-link" data-target="gallery">Gallery</a>
+                    <a class="nav-link" data-target="contact">Contact</a>
+                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform"  target="_blank" class="nav-link btn-nav-join">Apply</a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <div class="flex items-center md:hidden">
+                    <button id="menu-btn" type="button"
+                        class="inline-flex items-center justify-center rounded-md p-2 text-gray-300 hover:text-white focus:outline-none"
+                        aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <!-- Open Icon -->
+                        <svg id="icon-open" class="block h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <!-- Close Icon -->
+                        <svg id="icon-close" class="hidden h-7 w-7" xmlns="http://www.w3.org/2000/svg" fill="none"
+                            viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-gray-900 bg-black/80 backdrop-blur-md">
+            <div class="space-y-4 px-2 pt-4 pb-6 sm:px-3 text-center">
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="home">Home</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="featured-video">Featured</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="about">About</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="team">Team</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="events">Events</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="gallery">Gallery</a>
+                <a class="nav-link block rounded-md px-3 py-2 text-lg font-medium text-gray-200 hover:bg-gray-900 hover:text-white"
+                    data-target="contact">Contact</a>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform" target="_blank" class="nav-link btn-nav-join block w-3/4 mx-auto mt-4">Apply</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Hero Section -->
+        <section id="home" class="relative flex items-center justify-center overflow-hidden" data-theme="dark">
+
+            <!-- Backgrounds -->
+            <div id="hero-spotlight"></div>
+
+            <!-- Hero Content (Re-centered) -->
+            <div class="hero-content container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-24 text-center">
+                <div class="max-w-3xl mx-auto">
+                    <h1
+                        class="font-serif text-5xl font-medium tracking-tight text-white sm:text-7xl lg:text-9xl hero-reveal hero-reveal-1 select-none">
+                        Taylor's Theatre Kids
+                    </h1>
+                    <p
+                        class="mt-6 max-w-2xl mx-auto text-lg text-gray-300 sm:text-xl hero-reveal hero-reveal-2 select-none">
+                        Taylor's Society of Performing Arts is where passion ignites, talent is forged, and artists are
+                        born.
+                    </p>
+                    <div
+                        class="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4 hero-reveal hero-reveal-3">
+                        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeOwEIBb6seC9FmBiHyaCqN71d94BEQdkDrXDAh7n9KqW6Anw/viewform" target="_blank" class="btn-solid w-full sm:w-auto">
+                            Find Your Spotlight
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll More Button -->
+            <div id="scroll-more">
+                <span>Scroll More</span>
+                <div class="arrow"></div>
+            </div>
+        </section>
+
+        <!-- New Featured Video Section (Light Theme) -->
+        <section id="featured-video" class="py-24 sm:py-32 bg-image" data-theme="light">
+            <div class="container mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 text-center">
+                <div class="reveal reveal-1">
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-600 tracking-wider">Spotlight</h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-black sm:text-6xl">Featured
+                        Performance</p>
+                </div>
+
+                <!-- YouTube Embed Placeholder -->
+                <div class="mt-16 reveal reveal-2">
+                    <!-- Aspect ratio container for 16:9 video -->
+                    <div class="aspect-w-16 aspect-h-9 w-full max-w-4xl mx-auto rounded-lg overflow-hidden bg-gray-100 border border-gray-300 flex items-center justify-center">
+                        <iframe width="560" height="315" src="https://www.youtube.com/embed/LzPVrYjlwPE" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <!-- "View Our Events" button moved here -->
+                <div class="mt-16 text-center reveal reveal-3">
+                    <a href="past_productions.html" class="btn-ghost w-full sm:w-auto nav-link">
+                        View All Our Events
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section (Dark Theme) -->
+        <section id="about" class="py-24 sm:py-32 border-t border-gray-900" data-theme="dark">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-16 gap-y-12 items-start">
+
+                    <!-- Sticky Content -->
+                    <div class="sticky-content reveal reveal-1">
+                        <h2 class="font-serif text-base font-semibold leading-7 text-gray-400 tracking-wider">About Us
+                        </h2>
+                        <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-white sm:text-6xl">A Stage for
+                            Everyone</p>
+                        <p class="mt-6 text-xl leading-8 text-gray-300">
+                            The Society of Performing Arts at Taylor's University (SPART) is a student-led organization dedicated to fostering creativity in the performing arts. We provide a platform for students to explore theatre in all its facets.
+                        </p>
+                    </div>
+
+                    <!-- Scrolling Cards -->
+                    <div class="grid grid-cols-1 gap-12">
+                        <!-- Workshops & Training Card -->
+                        <a href="#"
+                            class="group block bg-gray-900/50 border border-gray-800 rounded-lg reveal reveal-2 overflow-hidden">
+                            <div class="overflow-hidden">
+                                <img src="images/D1.JPG" alt="Workshops & Training"
+                                    class="w-full h-64 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110">
+                            </div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-semibold text-white font-serif">Workshops & Training</h3>
+                                <p class="mt-3 text-gray-300">
+                                    We cultivate a dynamic community through workshops, performances, and collaborative projects.
+                                </p>
+                            </div>
+                        </a>
+                        <!-- Original Productions Card -->
+                        <a href="#"
+                            class="group block bg-gray-900/50 border border-gray-800 rounded-lg reveal reveal-3 overflow-hidden">
+                            <div class="overflow-hidden">
+                                <img src="images/D3.JPG"
+                                    alt="Original Productions"
+                                    class="w-full h-64 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110">
+                            </div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-semibold text-white font-serif">Original Productions</h3>
+                                <p class="mt-3 text-gray-300">
+                                    We produce original plays and adaptations across all genres, giving students opportunities in acting, directing, writing, and design.
+                                </p>
+                            </div>
+                        </a>
+                        <!-- A Role for Everyone Card -->
+                        <a href="#"
+                            class="group block bg-gray-900/50 border border-gray-800 rounded-lg reveal reveal-4 overflow-hidden">
+                            <div class="overflow-hidden">
+                                <img src="images/D2.jpg" alt="A Role for Everyone"
+                                    class="w-full h-64 object-cover transition-transform duration-500 ease-in-out group-hover:scale-110">
+                            </div>
+                            <div class="p-8">
+                                <h3 class="text-2xl font-semibold text-white font-serif">A Role for Everyone</h3>
+                                <p class="mt-3 text-gray-300">
+                                    We are a community of creatives where everyone has a role to play in bringing powerful stories to life.
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section (Light Theme) -->
+        <section id="team" class="py-24 sm:py-32 bg-image" data-theme="light">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center reveal reveal-1">
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-600 tracking-wider">The Cast</h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-black sm:text-6xl">Meet the
+                        Committee</p>
+                    <p class="mt-6 text-xl leading-8 text-gray-700">
+                        The dedicated artists and leaders who bring our society to life.
+                    </p>
+                </div>
+
+                <div class="mt-20 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12">
+                    <!-- Team Member 1 -->
+                    <div class="yearbook-card reveal reveal-2">
+                        <img class="yearbook-photo"
+                            src="images/danial.JPG" alt="President"
+                            onerror="this.src='https://placehold.co/400x400/FFF/000?text=Member+1'">
+                        <h3 class="yearbook-name">Faros Danial</h3>
+                        <p class="yearbook-role">President</p>
+                        <p class="yearbook-quote">I totally love SPART</p>
+                    </div>
+                    <!-- Team Member 2 -->
+                    <div class="yearbook-card reveal reveal-3">
+                        <img class="yearbook-photo"
+                            src="images/mark.jpeg" alt="Vice President"
+                            onerror="this.src='https://placehold.co/400x400/FFF/000?text=Member+2'">
+                        <h3 class="yearbook-name">Mark Aldrich</h3>
+                        <p class="yearbook-role">Vice President</p>
+                        <p class="yearbook-quote">45 degrees</p>
+                    </div>
+                    <!-- Team Member 3 -->
+                    <div class="yearbook-card reveal reveal-4">
+                        <img class="yearbook-photo"
+                            src="images/mandy.jpeg" alt="Secretary"
+                            onerror="this.src='https://placehold.co/400x400/FFF/000?text=Member+3'">
+                        <h3 class="yearbook-name">Mandy</h3>
+                        <p class="yearbook-role">Secretary</p>
+                        <p class="yearbook-quote">I survived</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 text-center reveal reveal-3">
+                    <a href="team.html" class="btn-ghost">
+                        See The Full 2025 Committee
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- New Legacy/Poster Section (Dark Theme) -->
+        <section id="legacy" class="py-24 sm:py-32 overflow-hidden" data-theme="dark">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mb-16 reveal reveal-1">
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-400 tracking-wider">Our Legacy
+                    </h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-white sm:text-6xl">Past Productions
+                    </p>
+                    <p class="mt-6 text-xl leading-8 text-gray-300">
+                        A look back at the shows that defined us. We've built a legacy of unforgettable performances,
+                        year after year.
+                    </p>
+
+                </div>
+            </div>
+
+            <!-- Marquee Container -->
+            <div class="marquee reveal reveal-2">
+                <div class="marquee-content" style="animation-duration: 15s;">
+                    <!-- Set 1 of posters -->
+                    <div class="poster">
+                        <img src="images/mr2.png"
+                            alt="Spring Awakening 2024" class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/spvts.JPG" alt="The Odyssey 2023"
+                            class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/towfull.png" alt="Cabaret Night 2023"
+                            class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/spartacular.JPG" alt="Macbeth 2022"
+                            class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/tddup1.png" alt="Chicago 2021"
+                            class="poster-image">
+                    </div>
+
+                    <!-- Set 2 (Duplicates for seamless loop) -->
+                    <div class="poster">
+                        <img src="images/mr2.png" alt="Spring Awakening" class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/spvts.JPG" alt="The Odyssey 2023"
+                            class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/towfull.png" alt="Cabaret Night 2023"
+                            class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/spartacular.JPG" alt="Macbeth 2022"
+                            class="poster-image">
+                    </div>
+                    <div class="poster">
+                        <img src="images/tddup1.png" alt="Chicago 2021"
+                            class="poster-image">
+                    </div>
+                </div>
+            </div>
+
+            <!-- New button added -->
+            <div class="mt-8 reveal reveal-2 flex justify-center">
+                <a href="past_productions.html" class="btn-ghost">View All Our Events</a>
+            </div>
+        </section>
+        <!-- End Legacy Section -->
+
+        <!-- Events Section (Dark Theme) -->
+        <section id="events" class="py-24 sm:py-32" data-theme="dark">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center reveal reveal-1">
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-400 tracking-wider">What's On</h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-white sm:text-6xl">Upcoming Shows
+                    </p>
+                    <p class="mt-6 text-xl leading-8 text-gray-300">
+                        The stage is set and the lights are warm. See what we're bringing to life this semester.
+                    </p>
+                </div>
+
+                <div class="mt-20 flow-root">
+                    <div class="-my-12 divide-y divide-gray-800">
+                        <!-- Event 1 -->
+                        <div class="py-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-center reveal reveal-2">
+                            <div class="md:col-span-1">
+                                <h3 class="text-2xl font-semibold font-serif text-white">Ace Of Spades</h3>
+                                <p class="text-lg font-medium text-gray-400">Dec 12-14, 2025</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <p class="text-lg text-gray-300 mb-4">
+                                    Spart’s thrilling end-of-year jukebox musical set in the dazzling world of macau’s cotai strip
+                                </p>
+                                <a href="https://linktr.ee/spart.tulc?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGncLfqfN7HnxRvL2sYE58fduxR0nHs17f6sXZNhYi4PJx6w56RDAJXaIQDVtU_aem_mHJav_HyeP6v_uHeP8tGNg" target="_blank" class="btn-ghost">Learn More</a>
+                            </div>
+                        </div>
+                        <!-- Event 2 -->
+                        <div class="py-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-center reveal reveal-3">
+                            <div class="md:col-span-1">
+                                <h3 class="text-2xl font-semibold font-serif text-white">SPARTuesday</h3>
+                                <p class="text-lg font-medium text-gray-400">Nov 20, 2025</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <p class="text-lg text-gray-300 mb-4">
+                                    Our bi-weekly social event for members of the club!
+                                </p>
+                                <a href="https://linktr.ee/spart.tulc?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGncLfqfN7HnxRvL2sYE58fduxR0nHs17f6sXZNhYi4PJx6w56RDAJXaIQDVtU_aem_mHJav_HyeP6v_uHeP8tGNg" target="_blank" class="btn-ghost">Sign Up</a>
+                            </div>
+                        </div>
+                        <!-- Event 3 -->
+                        <div class="py-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-center reveal reveal-4">
+                            <div class="md:col-span-1">
+                                <h3 class="text-2xl font-semibold font-serif text-white">SPARThursday</h3>
+                                <p class="text-lg font-medium text-gray-400">Nov 15, 2025</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <p class="text-lg text-gray-300 mb-4">
+                                    Our bi-weekly Workshop session for members of the club!
+                                </p>
+                                <a href="https://linktr.ee/spart.tulc?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGncLfqfN7HnxRvL2sYE58fduxR0nHs17f6sXZNhYi4PJx6w56RDAJXaIQDVtU_aem_mHJav_HyeP6v_uHeP8tGNg" target="_blank" class="btn-ghost">Register Now</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gallery Section (Light Theme) -->
+        <section id="gallery" class="py-24 sm:py-32 bg-image" data-theme="light">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mb-16 reveal reveal-1">
+                    <h2 class="font-serif text-base font-semibold leading-7 text-gray-600 tracking-wider">Our Moments
+                    </h2>
+                    <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-black sm:text-6xl">Behind the
+                        Curtain</p>
+                </div>
+
+                <div class="masonry-grid">
+                    <div class="gallery-item reveal">
+                        <img src="images/1.JPG" alt="Stage light on a performer">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/2.JPG" alt="Dancers in rehearsal">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/3.JPG" alt="Dance crew posing">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/4.JPG" alt="Band playing a concert">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/5.JPG" alt="Actors backstage in costume">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/6.JPG" alt="Full stage during a play">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/7.JPG" alt="Stage light on a performer">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/8.JPG" alt="Dancers in rehearsal">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/9.JPG" alt="Dance crew posing">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/10.JPG" alt="Band playing a concert">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/11.JPG" alt="Actors backstage in costume">
+                    </div>
+                    <div class="gallery-item reveal">
+                        <img src="images/12.JPG" alt="Full stage during a play">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section (Dark Theme) -->
+        <section id="contact" class="py-24 sm:py-32 border-t border-gray-900" data-theme="dark">
+            <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+
+                    <!-- Contact Info -->
+                    <div class="reveal reveal-1">
+                        <h2 class="font-serif text-base font-semibold leading-7 text-gray-400 tracking-wider">Join Us
+                        </h2>
+                        <p class="mt-2 font-serif text-4xl font-bold tracking-tight text-white sm:text-6xl">Find Your
+                            Spotlight</p>
+                        <p class="mt-6 text-xl leading-8 text-gray-300">
+                            Whether you're an actor, singer, dancer, musician, or technician, there's a place for you in
+                            SPART. Get in touch to learn more.
+                        </p>
+                        <div class="mt-10 space-y-4">
+                            <p class="text-lg text-gray-300">
+                                <strong class="text-white">Email:</strong>
+                                <a href="mailto:spart.society@taylors.edu.my" class="hover:underline">
+                                    tlc.spart@gmail.com</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Contact Form -->
+                    <form action="https://api.web3forms.com/submit" method="POST" class="space-y-6 reveal reveal-2">
+                        <input type="hidden" name="access_key" value="b89eff12-732a-4130-adee-433a9b46eafb">
+                        <div>
+                            <label for="name" class="block text-sm font-medium leading-6 text-gray-300">Full
+                                Name</label>
+                            <input type="text" name="name" id="name" autocomplete="name" required
+                                class="form-input mt-2 block w-full">
+                        </div>
+                        <div>
+                            <label for="email" class="block text-sm font-medium leading-6 text-gray-300">Email</label>
+                            <input type="email" name="email" id="email" autocomplete="email" required
+                                class="form-input mt-2 block w-full">
+                        </div>
+                        <div>
+                            <label for="message"
+                                class="block text-sm font-medium leading-6 text-gray-300">Message</label>
+                            <textarea name="message" id="message" rows="4" required
+                                class="form-input mt-2 block w-full"></textarea>
+                        </div>
+                        <div>
+                            <button type="submit" class="btn-solid w-full">
+                                Send Message
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer (Dark Theme) -->
+    <footer class="bg-black border-t border-gray-900" data-theme="dark">
+        <div class="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+                <!-- Logo & Copyright -->
+                <div class="flex flex-col md:items-start items-center gap-4">
+                    <div class="flex items-center gap-3">
+                        <img class="h-8 w-auto" src="images/logo.png" alt="SPART Logo"
+                            onerror="this.src='https://placehold.co/100x32/000000/FFFFFF?text=SPART'; this.classList.remove('inverted-logo');">
+                        <span class="text-lg font-semibold text-white font-serif">Taylor's Society of Performing
+                            Arts</span>
+                    </div>
+                    <p class="text-gray-400 text-sm">
+                        &copy; 2025 SPART. All Rights Reserved.
+                    </p>
+                </div>
+                <!-- Social Icons -->
+                <div class="flex space-x-6">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/sparttulc/?hl=en" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="Instagram">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <!-- TikTok -->
+                    <a href="https://www.tiktok.com/@spart.tlc" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="TikTok">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M21 16V8a4 4 0 0 0-4-4H9.5a4.5 4.5 0 0 0-4.02 6.13a4.5 4.5 0 0 0 4.02 2.87H13v5a4 4 0 0 0 4 4h1a4 4 0 0 0 4-4V8a4 4 0 0 0-4-4Z">
+                            </path>
+                        </svg>
+                    </a>
+                    <!-- YouTube -->
+                    <a href="https://www.youtube.com/@sparttulc" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="YouTube">
+                        <svg class="h-7 w-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <path
+                                d="M2.5 17a24.12 24.12 0 0 1 0-10C2.5 6 4.5 4 7 4h10c2.5 0 4.5 2 4.5 3v10c0 .5-.5 1.5-1.5 2S19.5 20 17 20H7c-2.5 0-4.5-.5-4.5-2Z">
+                            </path>
+                            <path d="m10 15 5-3-5-3z"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+
+</html>
